@@ -21,7 +21,7 @@ def main():
     
     
     merged = tf.summary.merge_all()
-    test_writer = tf.summary.FileWriter("tensorboardTests/second")
+    test_writer = tf.summary.FileWriter("tensorboardTests/third")
     tf.global_variables_initializer().run(session=sess)
     
     summary, result = sess.run([merged,constSum])
@@ -35,7 +35,7 @@ def main():
     
     
     
-    
+  
     
     
     
