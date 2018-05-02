@@ -38,12 +38,15 @@ def main():
     
     
     # Set up logging for predictions
+    """
     tensors_to_log = {"probabilities": "softmax_tensor"}
     logging_hook = tf.train.LoggingTensorHook(
     tensors=tensors_to_log, every_n_iter=50)
+    """
       
       
     # Train the model
+    """
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
             x={"x": train_data},
             y=train_labels,
@@ -52,8 +55,8 @@ def main():
             shuffle=True)
     mnist_classifier.train(
             input_fn=train_input_fn,
-            steps=20000,
-            hooks=[logging_hook])
+            steps=20000)"""
+    """hooks=[logging_hook])"""
 
     # Evaluate the model and print results
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
@@ -133,20 +136,23 @@ def cnn_model_fn(features, labels, mode):
     
     
 def getConv(input_layer, filters, size):
-    conv1 = tf.layers.conv2d(
-      inputs=input_layer,
-      filters=filters,
-      kernel_size=size,
-      padding="same",
-      activation=tf.nn.relu)
+    with tf.name_scope('convolutional') as scope:
+        conv1 = tf.layers.conv2d(
+          inputs=input_layer,
+          filters=filters,
+          kernel_size=size,
+          padding="same",
+          activation=tf.nn.relu,)
     return conv1
 
 def getPool(input_layer, size):
-    pool = tf.layers.max_pooling2d(inputs=input_layer, pool_size=2, strides=2)
+    with tf.name_scope('pool') as scope:
+        pool = tf.layers.max_pooling2d(inputs=input_layer, pool_size=2, strides=2)
     return pool
 
 def getDense(input_layer, units):   
-    dense = tf.layers.dense(inputs=input_layer, units=units, activation=tf.nn.relu)
+    with tf.name_scope('dense') as scope:
+        dense = tf.layers.dense(inputs=input_layer, units=units, activation=tf.nn.relu)
     return dense
     
 """
