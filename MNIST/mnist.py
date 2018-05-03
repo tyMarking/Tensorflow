@@ -19,6 +19,14 @@ tf.logging.set_verbosity(tf.logging.INFO)
 def main():
     #do the main thing
     print("running")
+    
+    opts = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
+    conf = tf.ConfigProto(gpu_options=opts)
+    conf.gpu_options.allow_growth = True
+    trainingConfig = tf.estimator.RunConfig(session_config=conf)
+
+    
+    
 #    inputLayer = tf.reshape(images, [-1, 28, 28, 1])
 #    tf.summary.image("input", inputLayer)
     # Load training and eval data
@@ -34,7 +42,8 @@ def main():
 #    onehot_eval_labels = tf.one_hot(indices=tf.cast(eval_labels, tf.int32), depth=10)
      # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-            model_fn=cnn_model_fn, model_dir="/tmp/mnist_2x256_model")
+            model_fn=cnn_model_fn, model_dir="/tmp/mnist_2x32_model",
+            config=trainingConfig)
     
     
     # Set up logging for predictions
@@ -50,7 +59,7 @@ def main():
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
             x={"x": train_data},
             y=train_labels,
-            batch_size=100,
+            batch_size=500,
             num_epochs=None,
             shuffle=True)
     mnist_classifier.train(
@@ -97,8 +106,8 @@ def cnn_model_fn(features, labels, mode):
     """
     inFlat = tf.reshape(input_layer, [-1, 28*28])
     
-    dense1 = getDense(inFlat, 256)
-    dense2 = getDense(dense1, 256)
+    dense1 = getDense(inFlat, 32)
+    dense2 = getDense(dense1, 32)
     logits = getDense(dense2, 10)
     
     predictions = {
