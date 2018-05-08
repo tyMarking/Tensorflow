@@ -42,7 +42,7 @@ def main():
 #    onehot_eval_labels = tf.one_hot(indices=tf.cast(eval_labels, tf.int32), depth=10)
      # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-            model_fn=cnn_model_fn, model_dir="/tmp/mnist_2x32_model",
+            model_fn=cnn_model_fn, model_dir="/tmp/mnist_2x64conv+1x256_model",
             config=trainingConfig)
     
     
@@ -59,12 +59,12 @@ def main():
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
             x={"x": train_data},
             y=train_labels,
-            batch_size=500,
+            batch_size=100,
             num_epochs=None,
             shuffle=True)
     mnist_classifier.train(
             input_fn=train_input_fn,
-            steps=40000)
+            steps=10000)
     """hooks=[logging_hook])"""
 
     # Evaluate the model and print results
@@ -104,11 +104,15 @@ def cnn_model_fn(features, labels, mode):
       inputs=dense, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
     logits = getDense(dropout, 10)
     """
-    inFlat = tf.reshape(input_layer, [-1, 28*28])
-    
-    dense1 = getDense(inFlat, 32)
-    dense2 = getDense(dense1, 32)
-    logits = getDense(dense2, 10)
+    conv1 = getConv(input_layer, 64, 5)
+    pool1 = getPool(conv1, 2)
+    conv2 = getConv(pool1, 64, 5)
+    pool2 = getPool(conv2, 2)
+    pool2_flat = tf.reshape(pool2, [-1,7*7*64])
+#    inFlat = tf.reshape(input_layer, [-1, 28*28])
+    dense1 = getDense(pool2_flat, 256)
+#    dense2 = getDense(dense1, 32)
+    logits = getDense(dense1, 10)
     
     predictions = {
       # Generate predictions (for PREDICT and EVAL mode)
