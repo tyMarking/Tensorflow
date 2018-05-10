@@ -42,7 +42,7 @@ def main():
 #    onehot_eval_labels = tf.one_hot(indices=tf.cast(eval_labels, tf.int32), depth=10)
      # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
-            model_fn=cnn_model_fn, model_dir="/tmp/mnist_2x64conv+1x256_model",
+            model_fn=cnn_model_fn, model_dir="/tmp/mnist_2x64conv+1x256+dropout_model",
             config=trainingConfig)
     
     
@@ -111,8 +111,11 @@ def cnn_model_fn(features, labels, mode):
     pool2_flat = tf.reshape(pool2, [-1,7*7*64])
 #    inFlat = tf.reshape(input_layer, [-1, 28*28])
     dense1 = getDense(pool2_flat, 256)
+    dropout = tf.layers.dropout(
+      inputs=dense1, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
+
 #    dense2 = getDense(dense1, 32)
-    logits = getDense(dense1, 10)
+    logits = getDense(dropout, 10)
     
     predictions = {
       # Generate predictions (for PREDICT and EVAL mode)
