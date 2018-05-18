@@ -21,10 +21,10 @@ tf.logging.set_verbosity(tf.logging.INFO)
 def main():
     #do the main thing
     print("running")
-    app = appjar.gui()
-    app.addLabel("title", "Welcome to appJar")
-    app.setLabelBg("title", "red")
-    app.go()
+#    app = appjar.gui()
+#    app.addLabel("title", "Welcome to appJar")
+#    app.setLabelBg("title", "red")
+#    app.go()
     opts = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
     conf = tf.ConfigProto(gpu_options=opts)
     conf.gpu_options.allow_growth = True
