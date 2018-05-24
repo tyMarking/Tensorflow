@@ -20,6 +20,7 @@ def activate():
         node1.addConnection(Connection(node3, 0.5))
         node2.addConnection(Connection(node3, 1))
         node3.addConnection(Connection(node4, 1))
+        node2.addConnection(Connection(node4, 0.1))
         
         ss = SortedSet([node3,node1,node2,node4], lambda x: -x.runActiv)
         print(ss[0].runActiv)
@@ -34,6 +35,8 @@ def activate():
             cNode = ss.pop(0)
             print(cNode.runActiv)
             cNode.propagate()
+#            ss.update()
+            ss = SortedSet(ss, lambda x: -x.runActiv)
         print("\n\n\n\n\n")
             
         print(node1.runActiv)
