@@ -10,8 +10,12 @@ import numpy as np
 import plotly.plotly as py
 import plotly.graph_objs as go
 import plotly
-
+import random
 import networkx as nx
+
+from nodes import Node
+from netNodeWrapper import NetNode
+from connections import Connection
 
 """
 many webs
@@ -34,12 +38,19 @@ Density Adjustment
 
 
 def main():
-    G=nx.random_geometric_graph(2000,0.05)
+    G=nx.random_geometric_graph(50,0.35)
     pos=nx.get_node_attributes(G,'pos')
-
+    
     dmin=1
     ncenter=0
+    
+    wrapperNodes = []
+    
+    
     for n in pos:
+        node = Node([])
+        netNode = NetNode(node, G.node[n])
+        wrapperNodes.append(netNode)
         x,y=pos[n]
         d=(x-0.5)**2+(y-0.5)**2
         if d<dmin:
@@ -56,6 +67,18 @@ def main():
         mode='lines')
     
     for edge in G.edges():
+        netNodeX = G.node[edge[0]]
+        netNodeY = G.node[edge[1]]
+        nodeX, nodeY = None, None
+        for n in wrapperNodes:
+            if n.netNode == netNodeX:
+                nodeX = n
+            if n.netNode == netNodeY:
+                nodeY = n
+        
+        #normal distrabution of densities for now 
+        nodeX.node.addConnection(Connection(nodeY.node, random.random()))
+        
         x0, y0 = G.node[edge[0]]['pos']
         x1, y1 = G.node[edge[1]]['pos']
         edge_trace['x'] += [x0, x1, None]
@@ -92,12 +115,12 @@ def main():
         
         
     
-    
+#    
 #    for node, adjacencies in enumerate(G.adjacency_list()):
 #        node_trace['marker']['color'].append(len(adjacencies))
 #        node_info = '# of connections: '+str(len(adjacencies))
 #        node_trace['text'].append(node_info)
-        
+#        
         
     fig = go.Figure(data=[edge_trace, node_trace],
              layout=go.Layout(
