@@ -24,12 +24,13 @@ start with a web
 
 Activations:
     input transition activates certain neurons
-    stack of node by highest activation
+    stack of node by highest activation divided by number of previace propigations
     propigates highest node
-    untill all nodes propigated 
+    untill when?
 Density Adjustment
     connection attempts to already tun nodes increase the density?
     not a training based asjustment
+    connections strengthened by activation after activations done 
 
 
 
