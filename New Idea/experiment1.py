@@ -10,6 +10,7 @@ import numpy as np
 import plotly.plotly as py
 import plotly.graph_objs as go
 import plotly
+import matplotlib.pyplot as plt
 import random
 import networkx as nx
 
@@ -28,7 +29,7 @@ Activations:
     propigates highest node
     untill when?
 Density Adjustment
-    connection attempts to already tun nodes increase the density?
+    connection attempts to already tun nodes increase the density?  
     not a training based asjustment
     connections strengthened by activation after activations done 
 
@@ -39,7 +40,8 @@ Density Adjustment
 
 
 def main():
-    G=nx.random_geometric_graph(50,0.35)
+    G=nx.newman_watts_strogatz_graph(50, 10, 3.4)
+#    G=nx.soft_random_geometric_graph(50,0.35)
     pos=nx.get_node_attributes(G,'pos')
     
     dmin=1
@@ -68,9 +70,11 @@ def main():
         mode='lines')
     
     for edge in G.edges():
-        netNodeX = G.node[edge[0]]
-        netNodeY = G.node[edge[1]]
-        nodeX, nodeY = None, None
+        
+#        netNodeX = G.node[edge[0]]
+#        netNodeY = G.node[edge[1]]
+#        nodeX, nodeY = None, None
+        """
         for n in wrapperNodes:
             if n.netNode == netNodeX:
                 nodeX = n
@@ -79,11 +83,11 @@ def main():
         
         #normal distrabution of densities for now 
         nodeX.node.addConnection(Connection(nodeY.node, random.random()))
-        
-        x0, y0 = G.node[edge[0]]['pos']
-        x1, y1 = G.node[edge[1]]['pos']
-        edge_trace['x'] += [x0, x1, None]
-        edge_trace['y'] += [y0, y1, None]
+        """
+#        x0, y0 = G.node[edge[0]]['pos']
+#        x1, y1 = G.node[edge[1]]['pos']
+#        edge_trace['x'] += [x0, x1, None]
+#        edge_trace['y'] += [y0, y1, None]
     
     node_trace = go.Scatter(
         x=[],
@@ -116,12 +120,13 @@ def main():
         
         
     
-#    
-#    for node, adjacencies in enumerate(G.adjacency_list()):
-#        node_trace['marker']['color'].append(len(adjacencies))
-#        node_info = '# of connections: '+str(len(adjacencies))
-#        node_trace['text'].append(node_info)
-#        
+    
+    for node, adjacencies in G.adjacency():
+        
+        node_trace['marker']['color'].append(len(adjacencies))
+        node_info = '# of connections: '+str(len(adjacencies))
+        node_trace['text'].append(node_info)
+        
         
     fig = go.Figure(data=[edge_trace, node_trace],
              layout=go.Layout(
