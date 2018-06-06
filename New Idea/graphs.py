@@ -12,15 +12,35 @@ import plotly
 import matplotlib.pyplot as plt
 import random
 import networkx as nx
+import pandas
+
 
 from nodes import Node
 from netNodeWrapper import NetNode
 from connections import Connection
 
 def getGeoGraph():
-     G=nx.soft_random_geometric_graph(500,0.1)
+    G=nx.soft_random_geometric_graph(500,0.1)
 
-
+    neurons = {}
+    for i in range(len(G.nodes)):
+         x, y = G.node[i]['pos']
+         neurons[i] = Node([])
+         neurons[i].runActiv = x+y
+    nx.set_node_attributes(G, neurons, 'node')
+    densities = {}
+    for edge in G.edges:
+        density  = random.gauss(0.5,0.3)
+        while density < 0 or density > 1:
+            density  = random.gauss(0.5,0.3)
+        densities[edge] = density
+        neurons[edge[0]].addConnection(Connection(edge[1], density))
+        neurons[edge[1]].addConnection(Connection(edge[0], density))
+        
+    nx.set_edge_attributes(G, densities, 'density')
+    
+         
+    return G
      
 def visGraph(G):
 
@@ -73,7 +93,7 @@ def visGraph(G):
             size=10,
             colorbar=dict(
                 thickness=15,
-                title='Node Connections',
+                title='Neuron Activations',
                 xanchor='left',
                 titleside='right'
             ),
@@ -88,10 +108,10 @@ def visGraph(G):
         
     
     
-    for node, adjacencies in G.adjacency():
+    for node in G.nodes:
         
-        node_trace['marker']['color'].append(len(adjacencies))
-        node_info = '# of connections: '+str(len(adjacencies))
+        node_trace['marker']['color'].append(G.nodes[node]['node'].getActivation())
+        node_info = 'Activation: '+str(G.nodes[node]['node'].getActivation())
         node_trace['text'].append(node_info)
         
         

@@ -39,5 +39,8 @@ class Node:
         for connection in self.connections:
             connection.run(self.runActiv)
         self.hasRun = True
+        
+    def getActivation(self):
+        return self.runActiv
     
     

@@ -42,7 +42,8 @@ Density Adjustment
 
 def main():
 #    G=nx.random_lobster(50, 10, 3.4)
-    G=nx.soft_random_geometric_graph(500,0.1)
+#    G=nx.soft_random_geometric_graph(500,0.1)
+    G = graphs.getGeoGraph()
     graphs.visGraph(G)
     
     
