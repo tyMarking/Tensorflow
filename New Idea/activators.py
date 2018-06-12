@@ -6,20 +6,28 @@ Created on Tue May 22 10:50:11 2018
 """
 from sortedcontainers import SortedSet
 from nodes import Node
+from graphs import visGraph
 from connections import Connection
-def activate():
+def activate(G):
 
+        nodes = []
+        print(G.nodes.items())
+        for i in G:
+            nodes.append(G.nodes[i]['node'])
         
-        ss = SortedSet([node3,node1,node2,node4], lambda x: -x.runActiv)
+        print(nodes)
+        
+        ss = SortedSet(nodes, lambda x: -x.runActiv/(x.numActivates+1))
         
         print("\n\n\n\n\n")
         
-        while ss.__len__() > 0:
+        for i in range(10):
             #current Node
-            cNode = ss.pop(0)
+            cNode = ss[0]
             print(cNode.runActiv)
             cNode.propagate()
 #            ss.update()
-            ss = SortedSet(ss, lambda x: -x.runActiv)
+            ss = SortedSet(ss, lambda x: -x.runActiv/(x.numActivates+1))
+            visGraph(G, i)
+        print("spacer")
 
-activate()

@@ -21,9 +21,11 @@ class Node:
     hasRun = False
     runActiv = 0.0
     connections = []
+    numActivates = 0
     
     def __init__(self, connections):
         self.connections = connections
+        self.numActicates = 0
     
     def addConnection(self, connection):
         self.connections.append(connection)
@@ -34,11 +36,13 @@ class Node:
     def newRun(self):
         self.hasRun = False
         self.runActiv = 0.0
+        self.numActivates = 0
         
     def propagate(self):
         for connection in self.connections:
             connection.run(self.runActiv)
         self.hasRun = True
+        self.numActivates += 1
         
     def getActivation(self):
         return self.runActiv

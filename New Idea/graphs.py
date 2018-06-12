@@ -20,7 +20,7 @@ from netNodeWrapper import NetNode
 from connections import Connection
 
 def getGeoGraph():
-    G=nx.soft_random_geometric_graph(500,0.1)
+    G=nx.soft_random_geometric_graph(50,0.35)
 
     neurons = {}
     for i in range(len(G.nodes)):
@@ -34,15 +34,15 @@ def getGeoGraph():
         while density < 0 or density > 1:
             density  = random.gauss(0.5,0.3)
         densities[edge] = density
-        neurons[edge[0]].addConnection(Connection(edge[1], density))
-        neurons[edge[1]].addConnection(Connection(edge[0], density))
+        neurons[edge[0]].addConnection(Connection(neurons[edge[1]], density))
+        neurons[edge[1]].addConnection(Connection(neurons[edge[0]], density))
         
     nx.set_edge_attributes(G, densities, 'density')
-    
+    print(G.nodes(data=True))
          
     return G
      
-def visGraph(G):
+def visGraph(G, index):
 
     pos=nx.get_node_attributes(G,'pos')
     
@@ -130,4 +130,4 @@ def visGraph(G):
                 xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                 yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
 
-    plotly.offline.plot(fig, filename='networkx.html'    )
+    plotly.offline.plot(fig, filename='networkx_' + str(index) + '.html'    )

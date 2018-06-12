@@ -17,7 +17,7 @@ import networkx as nx
 from nodes import Node
 from netNodeWrapper import NetNode
 from connections import Connection
-import graphs
+import graphs, activators
 
 """
 many webs
@@ -44,7 +44,9 @@ def main():
 #    G=nx.random_lobster(50, 10, 3.4)
 #    G=nx.soft_random_geometric_graph(500,0.1)
     G = graphs.getGeoGraph()
-    graphs.visGraph(G)
+#    graphs.visGraph(G)
+    activators.activate(G)
+#    graphs.visGraph(G)
     
     
 main()
