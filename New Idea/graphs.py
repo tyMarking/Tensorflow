@@ -20,13 +20,14 @@ from netNodeWrapper import NetNode
 from connections import Connection
 
 def getGeoGraph():
-    G=nx.soft_random_geometric_graph(50,0.35)
+    G=nx.soft_random_geometric_graph(5000,0.07)
 
     neurons = {}
     for i in range(len(G.nodes)):
          x, y = G.node[i]['pos']
          neurons[i] = Node([])
-         neurons[i].runActiv = x+y
+         neurons[i].runActiv = 0
+    neurons[250].runActiv = 10
     nx.set_node_attributes(G, neurons, 'node')
     densities = {}
     for edge in G.edges:
